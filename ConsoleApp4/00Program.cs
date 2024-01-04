@@ -281,7 +281,7 @@ Gold : {player.Gold} G
             {
                 var item = player.ItemInventory[i];
                 if (item == null) { continue; }
-                Console.WriteLine($"- {i + 1} " + item.ToInventoryString());
+                Console.WriteLine($"- {i + 1} " + item.ToInventoryString() + $" | {(int)(item.Gold * 0.85)}");
             }
             Console.WriteLine(@"
 0. 나가기
@@ -299,7 +299,7 @@ Gold : {player.Gold} G
                 string name = item.Name.ToString();
                 int index = Array.FindIndex(shop.Items, i => i.Name == item.Name);
                 shop.Items[index].IsBuy = false;
-                int gold = (int)(item.Gold / 0.85);
+                int gold = (int)(item.Gold * 0.85);
                 player.Gold += gold;
                 player.DelItemInventory(item);
                 Console.WriteLine($"\"{name}\" 아이템을 판매했습니다");
