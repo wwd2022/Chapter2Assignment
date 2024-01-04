@@ -32,6 +32,7 @@ namespace ConsoleApp4
 3. 상점
 
 원하시는 행동을 입력해주세요.");
+
             string input = Console.ReadLine();
             switch (input)
             {
@@ -53,10 +54,11 @@ namespace ConsoleApp4
 
         bool PageOpenState()
         {
-            Console.Clear();
             int atk = player.PulsState.ATK;
             int def = player.PulsState.DEF;
             int hp = player.PulsState.HP;
+
+            Console.Clear();
             Console.WriteLine($@"상태 보기
 캐릭터의 정보가 표시됩니다.
 
@@ -70,6 +72,7 @@ Gold : {player.Gold} G
 0. 나가기
 
 원하시는 행동을 입력해주세요.");
+
             if (Console.ReadLine() == "0")
             {
                 return false;
@@ -89,6 +92,7 @@ Gold : {player.Gold} G
 보유 중인 아이템을 관리할 수 있습니다.
 
 [아이템 목록]");
+
             for (int i = 0; i < player.ItemInventory.Length; i++)
             {
                 var item = player.ItemInventory[i];
@@ -100,6 +104,7 @@ Gold : {player.Gold} G
 0. 나가기
 
 원하시는 행동을 입력해주세요.");
+
             string input = Console.ReadLine();
             if (input == "1")
             {
@@ -125,6 +130,7 @@ Gold : {player.Gold} G
 보유 중인 아이템을 관리할 수 있습니다.
 
 [아이템 목록]");
+
             for (int i = 0; i < player.ItemInventory.Length; i++)
             {
                 var item = player.ItemInventory[i];
@@ -135,9 +141,13 @@ Gold : {player.Gold} G
 0. 나가기
 
 원하시는 행동을 입력해주세요.");
+
             string input = Console.ReadLine();
             int inputNum;
-            if (int.TryParse(input, out inputNum) && inputNum > 0 && player.ItemInventory[inputNum - 1] != null) 
+            if (int.TryParse(input, out inputNum) 
+                && inputNum > 0
+                && inputNum <= player.ItemInventory.Length
+                && player.ItemInventory[inputNum - 1] != null) 
             {
                 var item = player.ItemInventory[inputNum - 1];
                 item.IsEquip = !item.IsEquip;
@@ -167,6 +177,7 @@ Gold : {player.Gold} G
 {player.Gold} G
 
 [아이템 목록]");
+
             for (int i = 0; i < shop.Items.Length; i++)
             {
                 var item = shop.Items[i];
@@ -174,14 +185,19 @@ Gold : {player.Gold} G
             }
             Console.WriteLine(@"
 1. 아이템 구매
+2. 아이템 판매
 0. 나가기
 
 원하시는 행동을 입력해주세요.");
+
             string input = Console.ReadLine();
             switch (input)
             {
                 case "1":
                     while (PageOpenBuyShop()) { }
+                    break;
+                case "2":
+                    while (PageOpenSaleShop()) { }
                     break;
                 case "0":
                     return false;
@@ -203,6 +219,7 @@ Gold : {player.Gold} G
 {player.Gold} G
 
 [아이템 목록]");
+
             for (int i = 0; i < shop.Items.Length; i++)
             {
                 var item = shop.Items[i];
@@ -212,6 +229,7 @@ Gold : {player.Gold} G
 0. 나가기
 
 원하시는 행동을 입력해주세요.");
+
             string input = Console.ReadLine();
             int inputNum;
             if (int.TryParse(input, out inputNum) && inputNum > 0 && inputNum <= shop.Items.Length)
@@ -235,6 +253,47 @@ Gold : {player.Gold} G
                     Console.WriteLine("Gold 가 부족합니다.");
                 }
                 Console.ReadLine();
+
+            }
+            else if (input == "0")
+            {
+                return false;
+            }
+            else
+            {
+                Console.WriteLine("잘못된 입력입니다.");
+                Console.ReadLine();
+            }
+            return true;
+        }
+
+        bool PageOpenSaleShop()
+        {
+            Console.Clear();
+            Console.WriteLine($@"상점 - 아이템 판매
+필요한 아이템을 얻을 수 있는 상점입니다.
+
+[보유 골드]
+{player.Gold} G
+
+[아이템 목록]");
+            for (int i = 0; i < player.ItemInventory.Length; i++)
+            {
+                var item = player.ItemInventory[i];
+                if (item == null) { continue; }
+                Console.WriteLine($"- {i + 1} " + item.ToInventoryString());
+            }
+            Console.WriteLine(@"
+0. 나가기
+
+원하시는 행동을 입력해주세요.");
+            string input = Console.ReadLine();
+            int inputNum;
+            if (int.TryParse(input, out inputNum) 
+                && inputNum > 0 
+                && inputNum <= shop.Items.Length)
+            {
+                
 
             }
             else if (input == "0")
