@@ -36,6 +36,7 @@ namespace ConsoleApp4
         {
             int index = Array.IndexOf(ItemInventory,null);
             if (index == -1) return false;
+            item.IsEquip = false;
             ItemInventory[index] = item;
             return true;
         }
