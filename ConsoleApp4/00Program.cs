@@ -291,10 +291,20 @@ Gold : {player.Gold} G
             int inputNum;
             if (int.TryParse(input, out inputNum) 
                 && inputNum > 0 
-                && inputNum <= shop.Items.Length)
+                && inputNum <= player.ItemInventory.Length
+                && player.ItemInventory[inputNum - 1] != null)
             {
-                
-
+                // 아이템 이름을 기준으로 아이템을 탐색하고 판매한다.
+                var item = player.ItemInventory[inputNum - 1];
+                string name = item.Name.ToString();
+                int index = Array.FindIndex(shop.Items, i => i.Name == item.Name);
+                shop.Items[index].IsBuy = false;
+                int gold = (int)(item.Gold / 0.85);
+                player.Gold += gold;
+                player.DelItemInventory(item);
+                Console.WriteLine($"\"{name}\" 아이템을 판매했습니다");
+                Console.WriteLine($"소지금이 {gold} G 증가하였습니다");
+                Console.ReadLine();
             }
             else if (input == "0")
             {

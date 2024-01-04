@@ -78,13 +78,11 @@ namespace ConsoleApp4
             PulsState = new DefaultState();
             for (int i = 0; i < ItemInventory.Length; i++)
             {
-                if (ItemInventory[i] != null && ItemInventory[i].IsEquip)
-                {
-                    var item = ItemInventory[i];
-                    PulsState.ATK += item.ATK;
-                    PulsState.DEF += item.DEF;
-                    PulsState.HP += item.HP;
-                }
+                var item = ItemInventory[i];
+                if (item == null || !item.IsEquip) continue;
+                PulsState.ATK += item.ATK;
+                PulsState.DEF += item.DEF;
+                PulsState.HP += item.HP;
             }
         }
     }
