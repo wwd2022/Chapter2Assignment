@@ -18,8 +18,8 @@ namespace ConsoleApp4
 
     internal class Game
     {
-        Player player = new Player();
-        Shop shop = new Shop();
+        public Player player = new Player();
+        public Shop shop = new Shop();
         // 메인메뉴 출력
         public void Start()
         {
@@ -150,9 +150,23 @@ Gold : {player.Gold} G
                 && player.ItemInventory[inputNum - 1] != null) 
             {
                 var item = player.ItemInventory[inputNum - 1];
-                item.IsEquip = !item.IsEquip;
-                player.UpdateState();
-                Console.WriteLine($"\"{item.Name}\" 아이템을 장착{(item.IsEquip ? "" : "해제")}했습니다");
+                int equipSlot = item.EquipSlot;
+                // 장착한 같은 유형의 아이템이 없을경우 장착한다
+                if (Array.FindIndex(player.ItemInventory, e => // 플레이어 인벤토리 배열에서
+                    e != null  // null값이 아니며(빈칸이 아니며)
+                    && e.EquipSlot == equipSlot  // 장착유형(무기, 방어구)이 같은데
+                    && e.IsEquip // 착용하고 있는
+                    && e != item // 선택한 장비가 아닌 다른장비가
+                ) != -1) // 있다면
+                {
+                    Console.WriteLine($"이미 장착한 {(equipSlot == 1 ? "무기" : "방어구")}가 있습니다.");
+                }
+                else
+                {   // 아니라면 착용또는 착용해제
+                    item.IsEquip = !item.IsEquip;
+                    player.UpdateState();
+                    Console.WriteLine($"\"{item.Name}\" 아이템을 장착{(item.IsEquip ? "" : "해제")}했습니다");
+                }
                 Console.ReadLine();
             }
             else if (input == "0")
