@@ -14,6 +14,8 @@ namespace ConsoleApp4
         public PlayerItem?[] ItemInventory;
         /// <summary> 아이템으로 증가한 스텟 </summary>
         public DefaultState PulsState;
+        /// <summary> 경험치 </summary>
+        public int Exp;
 
         // 플레이어 생성시 기본 능력치
         public Player()
@@ -85,6 +87,19 @@ namespace ConsoleApp4
                 PulsState.DEF += item.DEF;
                 PulsState.HP += item.HP;
             }
+        }
+
+        public bool LevelUpCheck()
+        {
+            if (Level >= Exp)
+            {
+                Exp = 0;
+                Level += 1;
+                ATK += 0.5f;
+                DEF += 1;
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -62,8 +62,8 @@ namespace ConsoleApp4
 
         bool PageOpenState()
         {
-            int atk = player.PulsState.ATK;
-            int def = player.PulsState.DEF;
+            double atk = player.PulsState.ATK;
+            double def = player.PulsState.DEF;
             int hp = player.PulsState.HP;
 
             Console.Clear();
@@ -381,7 +381,7 @@ Gold : {player.Gold} G
         /// <param name="dungeonDef"> 권장방어력 </param>
         /// <param name="dungeonGold"> 클리어 보상 금액 </param>
         /// <returns></returns>
-        void PageOpenStartDungeon(string dungeonName, int dungeonDef, int dungeonGold)
+        void PageOpenStartDungeon(string dungeonName, float dungeonDef, int dungeonGold)
         {
             Console.Clear();
             if (player.HP <= 0)
@@ -418,8 +418,12 @@ Gold : {player.Gold} G
             else
             {
                 isDungeonClear = true;
-                dmg = rand.Next(25 + (dungeonDef - player.DEF + player.PulsState.DEF) , 36 + (dungeonDef - player.DEF + player.PulsState.DEF));
-                float pulsGoldFloat = rand.Next(player.ATK + player.PulsState.ATK, (player.ATK + player.PulsState.ATK) * 2 + 1) / 100;
+                int dmgMin = 25 + Convert.ToInt32(dungeonDef - player.DEF + player.PulsState.DEF);
+                int dmgMax = 36 + Convert.ToInt32(dungeonDef - player.DEF + player.PulsState.DEF);
+                dmg = rand.Next(dmgMin, dmgMax);
+                int goldMin = Convert.ToInt32(player.ATK + player.PulsState.ATK);
+                int goldMax = Convert.ToInt32((player.ATK + player.PulsState.ATK) * 2) + 1;
+                float pulsGoldFloat = rand.Next(goldMin, goldMax) / 100;
                 gold = dungeonGold + (int)(dungeonGold * pulsGoldFloat);
             }
 
@@ -433,7 +437,8 @@ Gold : {player.Gold} G
             }
             player.HP -= dmg;
             player.Gold += gold;
-
+            player.Exp += 1;
+            bool isLevelUp = player.LevelUpCheck();
             while (true)
             {
                 Console.Clear();
@@ -452,9 +457,15 @@ Gold : {player.Gold} G
                 Console.WriteLine($@"
 [탐험 결과]
 체력 {player.HP + dmg} -> {player.HP}
-Gold {player.Gold - gold} G -> {player.Gold} G
+Gold {player.Gold - gold} G -> {player.Gold} G");
 
-0. 나가기
+                if (isLevelUp)
+                {
+                    Console.WriteLine("레벨이 1 상승했습니다.");
+                    Console.WriteLine("공격력 0.5, 방어력 1이 증가합니다.");
+                }
+                Console.WriteLine(@"
+                0. 나가기
 
 원하시는 행동을 입력해주세요.");
 

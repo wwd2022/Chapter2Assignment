@@ -15,9 +15,9 @@ namespace ConsoleApp4
         /// <summary> 레벨 </summary>
         public int Level;
         /// <summary> 공격력 </summary>
-        public int ATK;
+        public float ATK;
         /// <summary> 방어력 </summary>
-        public int DEF;
+        public float DEF;
         /// <summary> 체력 </summary>
         public int HP;
         /// <summary> 골드(소지금) </summary>
