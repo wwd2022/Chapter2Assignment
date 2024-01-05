@@ -25,8 +25,8 @@ namespace ConsoleApp4
 
         public PlayerItem(string[] arr)
         {
-            IsBuy = false;
-            IsEquip = false;
+            IsBuy = Convert.ToBoolean(int.Parse(arr[7]));
+            IsEquip = Convert.ToBoolean(int.Parse(arr[8]));
             Name = arr[0];
             //Job;
             //Level;
