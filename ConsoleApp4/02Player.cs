@@ -24,7 +24,7 @@ namespace ConsoleApp4
             ATK = 10;
             DEF = 5;
             HP = 100;
-            Gold = 3000;
+            Gold = 1500;
             ItemInventory = new PlayerItem[100];
             PulsState = new DefaultState();
         }

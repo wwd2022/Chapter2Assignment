@@ -30,6 +30,7 @@ namespace ConsoleApp4
 1. 상태 보기
 2. 인벤토리
 3. 상점
+4. 던전입장
 
 원하시는 행동을 입력해주세요.");
 
@@ -44,6 +45,9 @@ namespace ConsoleApp4
                     break;
                 case "3": // 상점
                     while (PageOpenShop()) { }
+                    break;
+                case "4": // 던전입장
+                    while (PageOpenDungeon()) { }
                     break;
                 default:
                     Console.WriteLine("\r\n잘못된 입력입니다.");
@@ -250,7 +254,7 @@ Gold : {player.Gold} G
             {
                 PlayerItem item = shop.Items[inputNum - 1];
                     
-                if (player.Gold > item.Gold)
+                if (player.Gold >= item.Gold)
                 {
                     item.IsBuy = true;
                     player.Gold -= item.Gold;
@@ -316,6 +320,7 @@ Gold : {player.Gold} G
                 int gold = (int)(item.Gold * 0.85);
                 player.Gold += gold;
                 player.DelItemInventory(item);
+                player.UpdateState();
                 Console.WriteLine($"\"{name}\" 아이템을 판매했습니다");
                 Console.WriteLine($"소지금이 {gold} G 증가하였습니다");
                 Console.ReadLine();
@@ -330,6 +335,135 @@ Gold : {player.Gold} G
                 Console.ReadLine();
             }
             return true;
+        }
+
+        bool PageOpenDungeon()
+        {
+            Console.Clear();
+            Console.WriteLine(@"던전입장
+이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.
+
+1. 쉬운 던전     | 방어력 5 이상 권장
+2. 일반 던전     | 방어력 11 이상 권장
+3. 어려운 던전    | 방어력 17 이상 권장
+0. 나가기
+
+원하시는 행동을 입력해주세요.");
+            string input = Console.ReadLine();
+            switch (input)
+            {
+                case "1":
+                    PageOpenStartDungeon("쉬운 던전", 5, 1000);
+                    break;
+                case "2":
+                    PageOpenStartDungeon("일반 던전", 11, 1700);
+                    break;
+                case "3":
+                    PageOpenStartDungeon("어려운 던전", 17, 2500);
+                    break;
+                case "0":
+                    return false;
+                default:
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.ReadLine();
+                    break;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 던전 입장
+        /// </summary>
+        /// <param name="dungeonDef"> 권장방어력 </param>
+        /// <param name="dungeonGold"> 클리어 보상 금액 </param>
+        /// <returns></returns>
+        void PageOpenStartDungeon(string dungeonName, int dungeonDef, int dungeonGold)
+        {
+            Console.Clear();
+            if (player.HP <= 0)
+            {
+                while (true)
+                {
+                    Console.WriteLine(@"던전 입장불가
+체력이 없습니다.
+휴식으로 체력을 회복해주세요.
+
+0. 나가기
+
+원하시는 행동을 입력해주세요.");
+                    if (Console.ReadLine() == "0")
+                    {
+                        return; ;
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다.");
+                        Console.ReadLine();
+                    }
+                }
+            }
+            bool isDungeonClear = false;
+            int dmg = 0;
+            int gold = 0;
+            Random rand = new Random();
+            if (player.DEF + player.PulsState.DEF < dungeonDef && rand.Next(0, 10) < 4)
+            {
+                isDungeonClear = false;
+                dmg = (int)(player.HP / 2);
+            }
+            else
+            {
+                isDungeonClear = true;
+                dmg = rand.Next(25 + (dungeonDef - player.DEF + player.PulsState.DEF) , 36 + (dungeonDef - player.DEF + player.PulsState.DEF));
+                float pulsGoldFloat = rand.Next(player.ATK + player.PulsState.ATK, (player.ATK + player.PulsState.ATK) * 2 + 1) / 100;
+                gold = dungeonGold + (int)(dungeonGold * pulsGoldFloat);
+            }
+
+            if (dmg < 0)
+            {
+                dmg = 0;
+            }
+            if (player.HP < dmg)
+            {
+                dmg = player.HP;
+            }
+            player.HP -= dmg;
+            player.Gold += gold;
+            while (true)
+            {
+                Console.Clear();
+                if (isDungeonClear)
+                {
+                    Console.WriteLine($@"던전 클리어
+축하합니다!!
+{dungeonName}을 클리어 하였습니다.");
+                }
+                else
+                {
+                    Console.WriteLine($@"던전 클리어 실패
+{dungeonName}을 클리어하지 못했습니다.");
+                }
+
+                Console.WriteLine($@"
+[탐험 결과]
+체력 {player.HP + dmg} -> {player.HP}
+Gold {player.Gold - gold} G -> {player.Gold} G
+
+0. 나가기
+
+원하시는 행동을 입력해주세요.");
+
+                if (Console.ReadLine() == "0")
+                {
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.ReadLine();
+                }
+            }
+            
         }
     }
 }
