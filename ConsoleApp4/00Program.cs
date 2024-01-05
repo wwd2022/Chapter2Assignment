@@ -31,6 +31,7 @@ namespace ConsoleApp4
 2. 인벤토리
 3. 상점
 4. 던전입장
+5. 휴식하기
 
 원하시는 행동을 입력해주세요.");
 
@@ -48,6 +49,9 @@ namespace ConsoleApp4
                     break;
                 case "4": // 던전입장
                     while (PageOpenDungeon()) { }
+                    break;
+                case "5":
+                    while (PageOpenRest()) { }
                     break;
                 default:
                     Console.WriteLine("\r\n잘못된 입력입니다.");
@@ -429,6 +433,7 @@ Gold : {player.Gold} G
             }
             player.HP -= dmg;
             player.Gold += gold;
+
             while (true)
             {
                 Console.Clear();
@@ -462,8 +467,50 @@ Gold {player.Gold - gold} G -> {player.Gold} G
                     Console.WriteLine("잘못된 입력입니다.");
                     Console.ReadLine();
                 }
+            }   
+        }
+
+        bool PageOpenRest()
+        {
+            Console.Clear();
+            Console.WriteLine($@"휴식하기
+500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {player.Gold} G)
+
+1. 휴식하기
+0. 나가기
+
+원하시는 행동을 입력해주세요.");
+            string input = Console.ReadLine();
+            if (input == "1")
+            {
+                if (player.HP < 100)
+                {
+                    if (player.Gold >= 500)
+                    {
+                        player.Gold -= 500;
+                        player.HP = 100;
+                        Console.WriteLine("체력이 회복되었습니다.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("골드가 부족합니다.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("더 회복할 수 없습니다.");
+                }
             }
-            
+            else if (input == "0")
+            {
+                return false;
+            }
+            else
+            {
+                Console.WriteLine("잘못된 입력입니다.");
+            }
+            Console.ReadLine();
+            return true;
         }
     }
 }
