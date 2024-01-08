@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.Design;
 using System.Numerics;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace ConsoleApp4
 {
@@ -32,6 +34,8 @@ namespace ConsoleApp4
 3. 상점
 4. 던전입장
 5. 휴식하기
+6. 저장하기
+7. 불러오기
 
 원하시는 행동을 입력해주세요.");
 
@@ -50,8 +54,14 @@ namespace ConsoleApp4
                 case "4": // 던전입장
                     while (PageOpenDungeon()) { }
                     break;
-                case "5":
+                case "5": // 휴식하기
                     while (PageOpenRest()) { }
+                    break;
+                case "6": // 데이터 저장하기
+                    SaveAllItemsToJson(player, shop, "SaveData");
+                    break;
+                case "7": // 데이터 불러오기
+                    LoadAllItemsFromJson("SaveData");
                     break;
                 default:
                     Console.WriteLine("\r\n잘못된 입력입니다.");
@@ -465,7 +475,7 @@ Gold {player.Gold - gold} G -> {player.Gold} G");
                     Console.WriteLine("공격력 0.5, 방어력 1이 증가합니다.");
                 }
                 Console.WriteLine(@"
-                0. 나가기
+0. 나가기
 
 원하시는 행동을 입력해주세요.");
 
@@ -522,6 +532,47 @@ Gold {player.Gold - gold} G -> {player.Gold} G");
             }
             Console.ReadLine();
             return true;
+        }
+        
+        static void SaveAllItemsToJson(Player player, Shop shop, string filePath)
+        {
+            string jsonPlayer = JsonConvert.SerializeObject(player, Formatting.Indented);
+            File.WriteAllText(filePath + "Player", jsonPlayer); // Json 문자열을 파일로 저장
+            string jsonShop = JsonConvert.SerializeObject(shop, Formatting.Indented);
+            File.WriteAllText(filePath + "Shop", jsonShop); // Json 문자열을 파일로 저장
+            Console.WriteLine("데이터가 저장되었습니다");
+            Console.ReadLine();
+        }
+
+        void LoadAllItemsFromJson(string filePath)
+        {
+            // 파일로부터 JSON 문자열을 읽기
+            string jsonPlayer = File.ReadAllText(filePath + "Player");
+            // Json 문자열로부터 아이템 리스트를 역직렬화
+            Player? playerData = JsonConvert.DeserializeObject<Player>(jsonPlayer);
+            if (playerData != null)
+            {
+                player = playerData;
+                Console.WriteLine("상태 데이터를 불러왔습니다.");
+            }
+            else
+            {
+                Console.WriteLine("상태 데이터를 찾지못했습니다.");
+            }
+            // 파일로부터 JSON 문자열을 읽기
+            string jsonShop = File.ReadAllText(filePath + "Shop");
+            // Json 문자열로부터 아이템 리스트를 역직렬화
+            Shop? shopData = JsonConvert.DeserializeObject<Shop>(jsonShop);
+            if (shopData != null) 
+            {
+                shop = shopData;
+                Console.WriteLine("상점 데이터를 불러왔습니다.");
+            }
+            else
+            {
+                Console.WriteLine("상점 데이터를 찾지못했습니다.");
+            }
+            Console.ReadLine();
         }
     }
 }

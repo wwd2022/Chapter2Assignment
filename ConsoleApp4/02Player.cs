@@ -91,7 +91,7 @@ namespace ConsoleApp4
 
         public bool LevelUpCheck()
         {
-            if (Level >= Exp)
+            if (Level <= Exp)
             {
                 Exp = 0;
                 Level += 1;
